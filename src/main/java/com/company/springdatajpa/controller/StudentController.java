@@ -1,7 +1,10 @@
 package com.company.springdatajpa.controller;
 
+import com.company.springdatajpa.dto.StudentDto;
 import com.company.springdatajpa.entity.Student;
-import com.company.springdatajpa.service.StudentServiceImpl;
+import com.company.springdatajpa.service.impl.StudentServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,22 +25,25 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Student> getStudentById(@PathVariable Integer id) {
-        return studentService.getStudentById(id);
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Integer id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
     @PostMapping("/new")
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+//    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<StudentDto> createStudent(@RequestBody StudentDto studentDto) {
+        return new ResponseEntity<>(studentService.createStudent(studentDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteStudent(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteStudent(@PathVariable Integer id) {
         studentService.deleteStudent(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/edit/{id}")
-    public Student updateStudent(@PathVariable Integer id, @RequestBody Student student) {
-        return studentService.updateStudent(id, student);
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable Integer id, @RequestBody StudentDto student) {
+        StudentDto studentResponse = studentService.updateStudent(id, student);
+        return new ResponseEntity<>(studentResponse, HttpStatus.OK);
     }
 }
